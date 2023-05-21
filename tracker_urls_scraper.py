@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
-import requests
+import requests, os
 
 TRACKER_ROOT_URL = 'http://prserver.servegame.com:666/Server/PRServer/BattleRecorder/'
 
@@ -27,3 +27,10 @@ def get_trackers(start_date, end_date):
     return links
 
 
+def get_tracker_files(path):
+    files = os.listdir(path)
+    tracker_files = []
+    for f in files:
+        if f.endswith('.PRdemo'):
+            tracker_files.append(path + f)
+    return tracker_files

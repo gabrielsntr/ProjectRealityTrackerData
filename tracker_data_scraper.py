@@ -1,5 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from bs4 import BeautifulSoup
 from utils import map_name_parser
@@ -115,11 +117,21 @@ class TrackerDataScraper:
         self.options.add_argument("headless")
         self.driver = webdriver.Chrome(chrome_options=self.options)
 
-    def open_tracker(self, tracker_url):
-        match_id = tracker_url.split('/')[-1].replace('tracker_', '').replace('.PRdemo', '')
-        self.driver.get(tracker_url)
-        time.sleep(30)
+    def open_tracker(self, tracker_url, is_uploaded=False):
+        if is_uploaded:
+            match_id = tracker_url.split('\\')[-1].replace('tracker_', '').replace('.PRdemo', '')
 
+            tracker_reader_url = "http://prserver.servegame.com:666/Server/PRServer/BattleRecorder/tracker_viewer/index.html"
+            self.driver.get(tracker_reader_url)
+
+            wait = WebDriverWait(self.driver, 10)
+            choose_file = wait.until(EC.visibility_of_element_located((By.ID, 'demoFileSelection')))
+            choose_file.send_keys(tracker_url)
+        else:
+            match_id = tracker_url.split('/')[-1].replace('tracker_', '').replace('.PRdemo', '')
+            self.driver.get(tracker_url)
+
+        time.sleep(30)
         kills_table = self.driver.find_element(By.XPATH, "//table[@id='killsTable']").get_attribute("outerHTML")
         chat_table = self.driver.find_element(By.XPATH, "//table[@id='chatTable']").get_attribute("outerHTML")
         revives_table = self.driver.find_element(By.XPATH, "//table[@id='revivesTable']").get_attribute("outerHTML")
@@ -131,9 +143,10 @@ class TrackerDataScraper:
         return match_id, kills_table, chat_table, revives_table, vehicles_destroyed_table, kit_allocations_table, \
             serverinfo_table
 
-    def parse_data(self, tracker_url):
+    def parse_data(self, tracker_url, is_uploaded=False):
         match_id, kills_table, chat_table, revives_table, vehicles_destroyed_table, kit_allocations_table, \
-            serverinfo_table = self.open_tracker(tracker_url)
+            serverinfo_table = self.open_tracker(tracker_url, is_uploaded)
+
         kills = parse_kills(kills_table)
         chat = parse_chat(chat_table)
         revives = parse_revives(revives_table)
@@ -157,3 +170,5 @@ class TrackerDataScraper:
         }
 
         return consolidated
+
+
