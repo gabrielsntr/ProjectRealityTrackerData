@@ -1,10 +1,13 @@
-import json
+import json, tracker_urls_scraper
 from tracker_data_scraper import TrackerDataScraper
 
 
+
 if __name__ == '__main__':
+    trackers = tracker_urls_scraper.get_trackers('2023-05-20', '2023-05-21')
     scraper = TrackerDataScraper()
-    tracker_url = 'http://prserver.servegame.com:666/Server/PRServer/BattleRecorder/tracker_viewer/index.html?demo=../Server01/tracker/tracker_2023_05_14_20_09_07_saaremaa_gpm_cq_64.PRdemo'
-    data = scraper.parse_data(tracker_url)
-    with open(f"./parsed/{data.get('serverInfo', {}).get('matchId')}.json") as f:
-        json.dump(data, f)
+    for t in trackers:
+        print(t)
+        data = scraper.parse_data(t)
+        with open(f"./parsed/{data.get('serverInfo', {}).get('matchId')}.json", 'w') as f:
+            json.dump(data, f)

@@ -1,0 +1,22 @@
+{
+  "name": "Project Reality Server Statistics",
+  "dataColors": ["#A9A9A9", "#696969", "#808080", "#000000"],
+  "background": "#000000",
+  "foreground": "#808080",
+  "tableAccent": "#696969",
+  "visualStyles": {
+    "*": {
+      "*": {
+        "*": [
+          {
+            "color": {
+              "solid": {
+                "color": "#A9A9A9"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

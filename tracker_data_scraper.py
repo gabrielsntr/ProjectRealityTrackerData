@@ -2,6 +2,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from datetime import datetime
 from bs4 import BeautifulSoup
+from utils import map_name_parser
 import chromedriver_autoinstaller, time, pytz, requests
 
 
@@ -93,7 +94,9 @@ def parse_kit_allocations(parse_kit_allocations_table):
 def get_map_info(serverinfo):
     url = 'https://www.realitymod.com/mapgallery/json/{map_name}/{mode}.json'
     map_name = serverinfo.get('map_name', '').lower().replace('_', '').replace(' ', '')
+    map_name = map_name_parser.MAPS.get(map_name, map_name)
     mode = serverinfo.get('map_mode', '').lower() + '_' + serverinfo.get('map_layer', '').lower()
+    print(url.format(map_name=map_name, mode=mode))
     resp = requests.get(url.format(map_name=map_name, mode=mode))
     if resp.status_code == 200:
         return resp.json().get('Team')
@@ -115,7 +118,7 @@ class TrackerDataScraper:
     def open_tracker(self, tracker_url):
         match_id = tracker_url.split('/')[-1].replace('tracker_', '').replace('.PRdemo', '')
         self.driver.get(tracker_url)
-        time.sleep(5)
+        time.sleep(30)
 
         kills_table = self.driver.find_element(By.XPATH, "//table[@id='killsTable']").get_attribute("outerHTML")
         chat_table = self.driver.find_element(By.XPATH, "//table[@id='chatTable']").get_attribute("outerHTML")
@@ -145,7 +148,7 @@ class TrackerDataScraper:
         map_info = get_map_info(serverinfo)
         consolidated = {
             'serverInfo': serverinfo,
-            'mapInfo': {'Team1': map_info[0], 'Team2': map_info[1]},
+            'mapInfo': {'Team1': map_info[0], 'Team2': map_info[1]} if map_info else {},
             'kills': kills,
             'chat': chat,
             'revives': revives,
