@@ -21,9 +21,13 @@ def get_trackers(start_date, end_date):
     links = []
     for url in soup.findAll('a', href=True, string='Tracker'):
         if ("rubbish" not in url['href'].lower()) and ("incomplete" not in url['href'].lower()):
-            tracker_date = datetime.strptime('-'.join(url['href'].split('/')[-1].split('_')[1:4]), '%Y-%m-%d')
-            if start_date <= tracker_date <= end_date:
-                links.append(TRACKER_ROOT_URL + url['href'])
+            try:
+                tracker_date = datetime.strptime('-'.join(url['href'].split('/')[-1].split('_')[1:4]), '%Y-%m-%d')
+                if start_date <= tracker_date <= end_date:
+                    links.append(TRACKER_ROOT_URL + url['href'])
+            except Exception as e:
+                print(str(e))
+                pass
     return links
 
 

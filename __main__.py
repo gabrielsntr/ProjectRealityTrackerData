@@ -1,7 +1,7 @@
-import json, tracker_urls_scraper, shutil, os
+import json, tracker_urls_scraper, shutil, os, wget
 from tracker_data_scraper import TrackerDataScraper
 
-LOCAL_TRACKERS_PATH = "E:\\Projetos\\ProjectRealityTrackerData\\local_trackers\\"
+LOCAL_TRACKERS_PATH = "D:\\Projetos\\ProjectRealityTrackerData\\local_trackers\\"
 
 
 def move_trackers(tracker_name):
@@ -36,5 +36,5 @@ def parse_local_trackers(path):
 
 
 if __name__ == '__main__':
-    parse_remote_trackers('2023-05-20', '2023-05-21')
+    parse_remote_trackers('2023-05-24', '2023-05-24')
     parse_local_trackers(LOCAL_TRACKERS_PATH)

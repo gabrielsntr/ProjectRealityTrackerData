@@ -290,4 +290,9 @@ pyrightconfig.json
 
 # parsed jsons
 /parsed
-
+/local_trackers/*.PRdemo
+/local_trackers/processed/*.PRdemo
+.idea/
+.idea
+/idea
+/idea/
