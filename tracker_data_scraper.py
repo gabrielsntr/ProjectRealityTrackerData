@@ -8,6 +8,19 @@ from utils import map_name_parser
 import chromedriver_autoinstaller, time, pytz, requests
 
 
+def get_tracker_summary(match_id):
+    url = "http://prserver.servegame.com:666/Server/PRServer/BattleRecorder/Server01/tracker_json/tracker_"
+    resp = requests.get(url + match_id + '.json')
+    if resp.status_code == 200:
+        try:
+            resp_json = resp.json()
+        except Exception as e:
+            resp_json = {}
+        return resp_json
+    else:
+        return None
+
+
 def parse_kills(kills_table):
     kills = []
     soup = BeautifulSoup(kills_table, 'html.parser')
@@ -158,9 +171,12 @@ class TrackerDataScraper:
         match_start_date = match_start_date.replace(tzinfo=pytz.UTC).astimezone(pytz.timezone('America/Sao_Paulo')).isoformat()
         serverinfo.update({'round_start_time': match_start_date})
 
+        match_summary = get_tracker_summary(match_id)
+
         map_info = get_map_info(serverinfo)
         consolidated = {
             'serverInfo': serverinfo,
+            'matchSummary': match_summary,
             'mapInfo': {'Team1': map_info[0], 'Team2': map_info[1]} if map_info else {},
             'kills': kills,
             'chat': chat,

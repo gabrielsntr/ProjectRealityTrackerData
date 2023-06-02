@@ -296,3 +296,5 @@ pyrightconfig.json
 .idea
 /idea
 /idea/
+/test.ipynb
+/pbi/
